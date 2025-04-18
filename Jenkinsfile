@@ -7,11 +7,7 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                git branch: 'main', url: 'https://github.com/aman010mishra/mern_stack_project.git'
-            }
-        }
+        
 
         stage('Install Dependencies') {
             steps {
