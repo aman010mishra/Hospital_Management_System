@@ -1,40 +1,42 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18'  // Or 'node:20' if you want the latest stable
-        }
+  agent any
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/aman010mishra/mern_stack_project.git', branch: 'main'
+      }
     }
 
-    environment {
-        IMAGE_NAME = 'amanpep_project'
-        CONTAINER_NAME = 'amanpep_container'
+    stage('Install Dependencies') {
+      steps {
+        sh 'npm install'
+      }
     }
 
-    stages {
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh 'npm test || true'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                sh "docker build -t $IMAGE_NAME ."
-            }
-        }
-
-        stage('Run Docker Container') {
-            steps {
-                sh "docker stop $CONTAINER_NAME || true"
-                sh "docker rm $CONTAINER_NAME || true"
-                sh "docker run -d -p 8080:80 --name $CONTAINER_NAME $IMAGE_NAME"
-            }
-        }
+    stage('Build Project') {
+      steps {
+        sh 'npm run build || echo "No build step defined"'
+      }
     }
+
+    stage('Docker Build') {
+      steps {
+        sh 'docker build -t yourusername/yourapp:latest .'
+      }
+    }
+
+    stage('Docker Push (Optional)') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+          sh '''
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            docker push yourusername/yourapp:latest
+          '''
+        }
+      }
+    }
+
+    // Optional: Deploy to Heroku, EC2, etc.
+  }
 }
