@@ -2,7 +2,7 @@
 
 ## Project Info
 
-This project is built and maintained by **[Debashis SAu]**. It is designed to provide a seamless hospital management system with a focus on efficiency and user experience.
+This project is built and maintained by **[Aman Mishra]**. It is designed to provide a seamless hospital management system with a focus on efficiency and user experience.
 
 ## How can I edit this code?
 
